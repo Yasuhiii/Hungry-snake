@@ -2,27 +2,27 @@ import pygame, random
 from pygame.locals import *
 
 # Funções principais
-def on_grid_random():  # Gera posição aleatória na grade
+def on_grid_random():  #create a random grid
     x = random.randint(0, 59)
     y = random.randint(0, 59)
     return (x * 10, y * 10)
 
-def collision(c1, c2):  # Verifica colisão entre dois objetos
+def collision(c1, c2):  #verifies colision between the objects
     return c1[0] == c2[0] and c1[1] == c2[1]
 
-# Inicializa o jogo
+#start the game
 def initialize_game():
     snake = [(200, 200), (210, 200), (220, 200)]
     apple_pos = on_grid_random()
     return snake, apple_pos, LEFT, 0, initial_speed
 
-# Variáveis globais
+#global variables
 UP = 0
 RIGHT = 1
 DOWN = 2
 LEFT = 3
 
-# Escolha da dificuldade
+#difficulty option
 difficulty = None
 while difficulty not in ("easy", "medium", "hard"):
     difficulty = input("Escolha a dificuldade (easy/medium/hard): ").lower()
@@ -37,25 +37,25 @@ elif difficulty == "hard":
     initial_speed = 9
     speed_increment = 1.5
 
-# Configuração inicial do Pygame
+#pygame's configuration
 pygame.init()
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Cobra Esfomeada')
 font = pygame.font.Font('freesansbold.ttf', 18)
 
-# Inicializa estados do jogo
+#start the states of the game
 snake, apple_pos, my_direction, score, speed = initialize_game()
 snake_skin = pygame.Surface((10, 10))
-snake_skin.fill((0, 128, 0))  # Cor da cobra - verde
+snake_skin.fill((0, 128, 0))  #snake's color - green
 
 apple = pygame.Surface((10, 10))
-apple.fill((255, 0, 0))  # Cor da maçã - vermelha
+apple.fill((255, 0, 0))  # apple's color - red
 
 game_over = False
 clock = pygame.time.Clock()
 
-# Loop principal
+#main loop
 while not game_over:
     clock.tick(speed)
     for event in pygame.event.get():
@@ -72,29 +72,29 @@ while not game_over:
             if event.key == K_RIGHT and my_direction != LEFT:
                 my_direction = RIGHT
 
-    # Verifica colisão com maçã
+    #verifies colision to the apple
     if collision(snake[0], apple_pos):
         apple_pos = on_grid_random()
         snake.append((0, 0))
         score += 5
         speed += speed_increment
 
-    # Verifica colisão com bordas
+    #verifies colision to the edge
     if snake[0][0] >= width or snake[0][1] >= height or snake[0][0] < 0 or snake[0][1] < 0:
         game_over = True
 
-    # Verifica colisão com o corpo da cobra
+    #verifies colision from snake's body
     if snake[0] in snake[1:]:
         game_over = True
 
     if game_over:
         break
 
-    # Move o corpo da cobra
+    #move the snake's body
     for i in range(len(snake) - 1, 0, -1):
         snake[i] = snake[i - 1]
 
-    # Move a cabeça da cobra
+    #move the snake's head
     if my_direction == UP:
         snake[0] = (snake[0][0], snake[0][1] - 10)
     if my_direction == DOWN:
@@ -104,7 +104,7 @@ while not game_over:
     if my_direction == LEFT:
         snake[0] = (snake[0][0] - 10, snake[0][1])
 
-    # Atualiza a tela
+    #update the screen
     screen.fill((210, 180, 140))
     screen.blit(apple, apple_pos)
 
@@ -116,7 +116,7 @@ while not game_over:
 
     pygame.display.update()
 
-# Tela de Game Over
+#game over screen
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
